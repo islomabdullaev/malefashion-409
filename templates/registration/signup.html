@@ -23,7 +23,7 @@
   
 
   <div class="d-md-flex half">
-    <div class="bg" style="background-image: url('{% static 'registration/images/bg_1.jpg' %}');"></div>
+    <div class="bg" style="background-image: url('../../static/registration/images/bg_1.jpg');"></div>
     <div class="contents">
 
       <div class="container">
@@ -31,23 +31,28 @@
           <div class="col-md-12">
             <div class="form-block mx-auto">
               <div class="text-center mb-5">
-                <h3 class="text-uppercase">Register to <strong>Colorlib</strong></h3>
+                <h3 class="text-uppercase">Register to <strong>Malefashion</strong></h3>
               </div>
-              <form action="#" method="post">
+              <form action="#" method="POST">
+                {% csrf_token %}
                 <div class="form-group first">
                   <label for="username">Username</label>
-                  <input type="text" class="form-control" placeholder="your-email@gmail.com" id="username">
+                  <input name="username" type="text" class="form-control" placeholder="username" id="username">
                 </div>
                 <div class="form-group last mb-3">
                   <label for="password">Password</label>
-                  <input type="password" class="form-control" placeholder="Your Password" id="password">
+                  <input name="password" type="password" class="form-control" placeholder="Your Password" id="password">
+                </div>
+                <div class="form-group last mb-3">
+                  <label for="password">Password Confirm</label>
+                  <input name="password_confirm" type="password" class="form-control" placeholder="Confirm Password" id="password">
                 </div>
                 
                 <div class="d-sm-flex mb-5 align-items-center">
-                  <a href="{% url 'users:signin' %}">Login</a>
+                  <p>You have an account ? <a href="{% url 'users:signin' %}">Login</a></p>
                 </div>
 
-                <input type="submit" value="Log In" class="btn btn-block py-2 btn-primary">                
+                <input type="submit" value="Register" class="btn btn-block py-2 btn-primary">                
               </form>
             </div>
           </div>
