@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from blogs.models import PostModel
 
 # models
 from pages.models import BannerModel
@@ -27,7 +28,14 @@ def aboutPageView(request):
 
 
 def blogPageView(request):
-    return render(request, template_name="blog.html")
+    posts = PostModel.objects.all()
+    tag = request.GET.get('tag')
+    if tag:
+        posts = PostModel.objects.filter(tags__title=tag)
+    context = {
+        "posts": posts
+    }
+    return render(request, template_name="blog.html", context=context)
 
 
 def contactPageView(request):
