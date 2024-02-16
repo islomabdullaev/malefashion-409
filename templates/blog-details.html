@@ -13,7 +13,7 @@
                             <ul>
                                 <li>By {{ post.author.full_name }}</li>
                                 <li>{{ post.created_at|date:'d F, Y' }}</li>
-                                <li>0 Comments</li>
+                                <li>{{ post.comments.all.count }} Comments</li>
                             </ul>
                         </div>
                     </div>
@@ -21,14 +21,14 @@
             </div>
         </section>
         <!-- Blog Details Hero End -->
-    
+
         <!-- Blog Details Section Begin -->
         <section class="blog-details spad">
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-12">
                         <div class="blog__details__pic">
-                            <img src="img/blog/details/blog-details.jpg" alt="">
+                            <img src="{{ post.image.url }}" alt="">
                         </div>
                     </div>
                     <div class="col-lg-8">
@@ -76,35 +76,66 @@
                             </div>
                             <div class="blog__details__btns">
                                 <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-6">
-                                        <a href="" class="blog__details__btns__item">
-                                            <p><span class="arrow_left"></span> Previous Pod</p>
-                                            <h5>It S Classified How To Utilize Free Classified Ad Sites</h5>
-                                        </a>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 h-50">
+                                        {% if post.get_previous_by_created_at %}
+                                            <a href="{% url 'blogs:details' pk=post.get_previous_by_created_at.pk %}" class="blog__details__btns__item">
+                                                <p><span class="arrow_left"></span> Previous Pod</p>
+                                                <h5>{{ post.get_previous_by_created_at }}</h5>
+                                            </a>
+                                        {% endif %}
                                     </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-6">
-                                        <a href="" class="blog__details__btns__item blog__details__btns__item--next">
-                                            <p>Next Pod <span class="arrow_right"></span></p>
-                                            <h5>Tips For Choosing The Perfect Gloss For Your Lips</h5>
-                                        </a>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 h-50">
+                                        {% if post.get_next_by_created_at %}
+                                            <a href="{% url 'blogs:details' pk=post.get_next_by_created_at.pk %}" class="blog__details__btns__item blog__details__btns__item--next">
+                                                <p>Next Pod <span class="arrow_right"></span></p>
+                                                <h5>{{ post.get_next_by_created_at }}</h5>
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
+                            <div class="comment__section">
+                                <ul>
+                                    {% for comment in post.comments.all %}
+                                    <li class="media">
+                                        <div class="media-body">
+                                            <span class="text-muted pull-right">
+                                                <small class="text-muted">
+                                                    {{ comment.created_at|timesince }}
+                                                </small>
+                                            </span>
+                                            <strong>
+                                                {{ comment.name }}
+                                            </strong>
+                                            <p>
+                                                {{ comment.text }}
+                                            </p>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                             <div class="blog__details__comment">
                                 <h4>Leave A Comment</h4>
-                                <form action="#">
+                                {% if form.errors %}
+                                    {% for error in form.errors %}
+                                        <p style="color: red;">{{ error }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                                <form action="" method="POST">
+                                    {% csrf_token %}
                                     <div class="row">
                                         <div class="col-lg-4 col-md-4">
-                                            <input type="text" placeholder="Name">
+                                            {{ form.name }}
                                         </div>
                                         <div class="col-lg-4 col-md-4">
-                                            <input type="text" placeholder="Email">
+                                            {{ form.email }}
                                         </div>
                                         <div class="col-lg-4 col-md-4">
-                                            <input type="text" placeholder="Phone">
+                                            {{ form.phone }}
                                         </div>
                                         <div class="col-lg-12 text-center">
-                                            <textarea placeholder="Comment"></textarea>
+                                            {{ form.text }}
                                             <button type="submit" class="site-btn">Post Comment</button>
                                         </div>
                                     </div>
