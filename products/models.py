@@ -67,7 +67,7 @@ class ProductModel(models.Model):
     image = models.ImageField(upload_to="products")
     discount = models.PositiveIntegerField(default=0)
     rating = models.PositiveIntegerField(default=1, validators=[rating_value_validate])
-    category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
+    category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE, related_name="products")
     brand = models.ForeignKey(BrandModel, on_delete=models.CASCADE)
     sizes = models.ManyToManyField(SizeModel)
     colors = models.ManyToManyField(ColorModel)

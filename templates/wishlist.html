@@ -54,8 +54,12 @@
                                     <ul class="product__hover">
                                         <li>
                                             <a href="{% url 'products:add_to_wishlist' product_pk=wishlist.product.pk %}">
-                                                {% if request.user|in_wishlist:wishlist.product %}
-                                                    <img src="{% static 'img/icon/heartr.png' %}" alt="">
+                                                {% if request.user.is_authenticated %}
+                                                    {% if request.user|in_wishlist:wishlist.product %}
+                                                        <img src="{% static 'img/icon/heartr.png' %}" alt="">
+                                                    {% else %}
+                                                        <img src="{% static 'img/icon/heart.png' %}" alt="">
+                                                    {% endif %}
                                                 {% else %}
                                                     <img src="{% static 'img/icon/heart.png' %}" alt="">
                                                 {% endif %}

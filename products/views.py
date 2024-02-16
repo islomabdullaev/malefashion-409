@@ -1,5 +1,6 @@
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 
 from products.models import ProductModel, WishlistModel
 
@@ -12,6 +13,8 @@ def wishlistPageView(request):
     return render(request, template_name="wishlist.html", context=context)
 
 
+
+@login_required
 def add_to_wishlist(request, product_pk):
     product = ProductModel.objects.get(id=product_pk)
     current_path_url = request.META.get("HTTP_REFERER")

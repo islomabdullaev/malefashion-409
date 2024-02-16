@@ -3,7 +3,7 @@ from blogs.models import PostModel
 
 # models
 from pages.models import BannerModel
-from products.models import ProductModel
+from products.models import BrandModel, CategoryModel, ColorModel, ProductModel, SizeModel, TagModel
 
 # Create your views here.
 
@@ -16,9 +16,14 @@ def homePageView(request):
 
 
 def shopPageView(request):
-    products = ProductModel.objects.all()
+
     context = {
-        "products": products
+        "products": ProductModel.objects.all(),
+        "categories": CategoryModel.objects.all(),
+        "brands": BrandModel.objects.all(),
+        "sizes": SizeModel.objects.all(),
+        "colors": ColorModel.objects.all(),
+        "tags": TagModel.objects.all()
     }
     return render(request, template_name="shop.html", context=context)
 

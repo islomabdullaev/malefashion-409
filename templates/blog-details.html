@@ -77,18 +77,18 @@
                             <div class="blog__details__btns">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-sm-6 h-50">
-                                        {% if post.get_previous_by_created_at %}
-                                            <a href="{% url 'blogs:details' pk=post.get_previous_by_created_at.pk %}" class="blog__details__btns__item">
+                                        {% if post.get_previous %}
+                                            <a href="{% url 'blogs:details' pk=post.get_previous.pk %}" class="blog__details__btns__item">
                                                 <p><span class="arrow_left"></span> Previous Pod</p>
-                                                <h5>{{ post.get_previous_by_created_at }}</h5>
+                                                <h5>{{ post.get_previous }}</h5>
                                             </a>
                                         {% endif %}
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-6 h-50">
-                                        {% if post.get_next_by_created_at %}
-                                            <a href="{% url 'blogs:details' pk=post.get_next_by_created_at.pk %}" class="blog__details__btns__item blog__details__btns__item--next">
+                                        {% if post.get_next %}
+                                            <a href="{% url 'blogs:details' pk=post.get_next.pk %}" class="blog__details__btns__item blog__details__btns__item--next">
                                                 <p>Next Pod <span class="arrow_right"></span></p>
-                                                <h5>{{ post.get_next_by_created_at }}</h5>
+                                                <h5>{{ post.get_next }}</h5>
                                             </a>
                                         {% endif %}
                                     </div>
