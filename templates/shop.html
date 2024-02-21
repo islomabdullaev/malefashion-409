@@ -4,6 +4,10 @@
 {% load static %}
 
 {% block content %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+
+    {% endblock %}
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
         <div class="container">
@@ -29,10 +33,11 @@
                 <div class="col-lg-3">
                     <div class="shop__sidebar">
                         <div class="shop__sidebar__search">
-                            <form method="GET">
+                            <form method="GET" class="mb-3">
                                 <input name="q" type="text" placeholder="Search...">
                                 <button type="submit"><span class="icon_search"></span></button>
                             </form>
+                            <a class="text-primary" href="{% url 'pages:shop' %}">Clear Filter</a>
                         </div>
                         <div class="shop__sidebar__accordion">
                             <div class="accordion" id="accordionExample">
@@ -73,13 +78,9 @@
                                         <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
                                     </div>
                                     <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__price">
-                                                <ul>
-                                                    <li><a href="#">${{ min_price }} - ${{ max_price }}</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                        <form method="GET">
+                                            <input onchange="this.form.submit()" name="range" value="" type="text" id="myRangeSlider"/>
+                                        </form>
                                     </div>
                                 </div>
                                 <div class="card">
@@ -110,7 +111,7 @@
                                             <div class="shop__sidebar__color">
                                                 {% for color in colors %}
                                                     <label style="background-color: {{ color.code }};" for="{{ color.name }}">
-                                                        <input type="radio" id="{{ color.name }}">
+                                                        <a href="{% url 'pages:shop' %}?color={{ color.name }}"><input type="text" id="{{ color.name }}"></a>
                                                     </label>
                                                 {% endfor %}
                                             </div>
@@ -146,11 +147,17 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="shop__product__option__right">
                                     <p>Sort by Price:</p>
-                                    <select>
-                                        <option value="">Low To High</option>
-                                        <option value="">$0 - $55</option>
-                                        <option value="">$55 - $100</option>
-                                    </select>
+                                    <form method="GET"> 
+                                        <select name="sort" onchange="this.form.submit()">
+                                            {% if request.GET.sort == '-price' %}
+                                                <option value="-price">${{ max_price }} - ${{ min_price }}</option>
+                                                <option value="price">${{ min_price }} - ${{ max_price }}</option>
+                                            {% else %}
+                                            <option value="price">${{ min_price }} - ${{ max_price }}</option>
+                                            <option value="-price">${{ max_price }} - ${{ min_price }}</option>
+                                            {% endif %}
+                                        </select>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -222,4 +229,20 @@
         </div>
     </section>
     <!-- Shop Section End -->
+    {% block extra_js %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#myRangeSlider").ionRangeSlider({
+                min: {{ min_price }},
+                max: {{ max_price }},
+                from: {{ min_price }},
+                to: {{ max_price }},
+                step: 10
+            });
+        });
+    </script>
+    
+    {% endblock %}
 {% endblock %}

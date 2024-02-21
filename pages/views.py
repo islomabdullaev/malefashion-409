@@ -16,26 +16,29 @@ def homePageView(request):
 
 
 def shopPageView(request):
-    products = ProductModel.objects.all().order_by("-price")
+    products = ProductModel.objects.all().order_by("price")
     q = request.GET.get('q')
     category = request.GET.get('category')
+    sort = request.GET.get('sort')
     brand = request.GET.get('brand')
     size = request.GET.get('size')
     color = request.GET.get('color')
     tag = request.GET.get('tag')
 
     if q:
-        products = ProductModel.objects.filter(name__icontains=q)
+        products = products.filter(name__icontains=q)
     elif category:
-        products = ProductModel.objects.filter(category__title=category)
+        products = products.filter(category__title=category)
     elif brand:
-        products = ProductModel.objects.filter(brand__title=brand)
+        products = products.filter(brand__title=brand)
     elif size:
-        products = ProductModel.objects.filter(sizes__title=size)
+        products = products.filter(sizes__title=size)
     elif color:
-        products = ProductModel.objects.filter(colors__name=color)
+        products = products.filter(colors__name=color)
     elif tag:
-        products = ProductModel.objects.filter(tags__title=tag)
+        products = products.filter(tags__title=tag)
+    elif sort:
+        products = products.order_by(sort)
 
 
     context = {
