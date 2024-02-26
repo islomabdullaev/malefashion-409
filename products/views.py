@@ -13,6 +13,13 @@ def wishlistPageView(request):
     return render(request, template_name="wishlist.html", context=context)
 
 
+def shopDetailView(request, pk):
+    product = ProductModel.objects.get(pk=pk)
+    context = {
+        "product": product
+    }
+    return render(request, template_name="shop-details.html", context=context)
+
 
 @login_required
 def add_to_wishlist(request, product_pk):

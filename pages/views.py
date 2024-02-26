@@ -1,16 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from blogs.models import PostModel
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # models
-from pages.models import BannerModel
+from pages.models import BannerModel, ContactModel
 from products.models import BrandModel, CategoryModel, ColorModel, ProductModel, SizeModel, TagModel
 from django.db.models import Max, Min
 # Create your views here.
 
 def homePageView(request):
     banners = BannerModel.objects.filter(is_active=True)
+    products = ProductModel.objects.all()
+    posts = PostModel.objects.all()
     context = {
-        "banners": banners
+        "banners": banners,
+        "products": products,
+        "posts": posts
     }
     return render(request, template_name="home.html", context=context)
 
@@ -18,6 +23,8 @@ def homePageView(request):
 def shopPageView(request):
     products = ProductModel.objects.all().order_by("price")
     q = request.GET.get('q')
+    from_price = request.GET.get("from_price")
+    to_price = request.GET.get("to_price")
     category = request.GET.get('category')
     sort = request.GET.get('sort')
     brand = request.GET.get('brand')
@@ -39,6 +46,22 @@ def shopPageView(request):
         products = products.filter(tags__title=tag)
     elif sort:
         products = products.order_by(sort)
+    elif from_price and to_price:
+        products = products.filter(price__gte=from_price, price__lte=to_price)
+    
+    paginator = Paginator(products, 1)
+    page_number = int(request.GET.get('page', 1))
+
+    try:
+        page_obj = paginator.get_page(page_number)  # returns the desired page object
+        print("worked !")
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = paginator.page(1)
+        print("error not int")
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = paginator.page(paginator.num_pages)
 
 
     context = {
@@ -49,7 +72,8 @@ def shopPageView(request):
         "colors": ColorModel.objects.all(),
         "tags": TagModel.objects.all(),
         "min_price": ProductModel.objects.aggregate(min_price=Min("price"))['min_price'],
-        "max_price": ProductModel.objects.aggregate(max_price=Max("price"))['max_price']
+        "max_price": ProductModel.objects.aggregate(max_price=Max("price"))['max_price'],
+        "page_obj": page_obj
     }
     return render(request, template_name="shop.html", context=context)
 
@@ -70,4 +94,10 @@ def blogPageView(request):
 
 
 def contactPageView(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        text = request.POST.get("text")
+        ContactModel.objects.create(name=name, email=email, text=text)
+        return redirect('pages:contact')
     return render(request, template_name="contact.html")

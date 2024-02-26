@@ -18,3 +18,19 @@ class BannerModel(models.Model):
     class Meta:
         verbose_name = "Banner"
         verbose_name_plural = "Banners"
+
+
+class ContactModel(models.Model):
+    name = models.CharField(max_length=36)
+    email = models.EmailField(max_length=64)
+    text = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self.text}"
+    
+    class Meta:
+        verbose_name = "Contact"
+        verbose_name_plural = "Contacts"
