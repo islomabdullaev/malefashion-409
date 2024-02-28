@@ -15,8 +15,10 @@ def wishlistPageView(request):
 
 def shopDetailView(request, pk):
     product = ProductModel.objects.get(pk=pk)
+    related_products = ProductModel.objects.filter(category__title=product.category.title).exclude(pk=product.pk)
     context = {
-        "product": product
+        "product": product,
+        "related_products": related_products
     }
     return render(request, template_name="shop-details.html", context=context)
 

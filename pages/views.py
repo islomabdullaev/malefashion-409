@@ -49,16 +49,14 @@ def shopPageView(request):
     elif from_price and to_price:
         products = products.filter(price__gte=from_price, price__lte=to_price)
     
-    paginator = Paginator(products, 1)
+    paginator = Paginator(products, 3)
     page_number = int(request.GET.get('page', 1))
 
     try:
         page_obj = paginator.get_page(page_number)  # returns the desired page object
-        print("worked !")
     except PageNotAnInteger:
         # if page_number is not an integer then assign the first page
         page_obj = paginator.page(1)
-        print("error not int")
     except EmptyPage:
         # if page is empty then return last page
         page_obj = paginator.page(paginator.num_pages)
