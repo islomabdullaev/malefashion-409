@@ -3,7 +3,8 @@ from django.contrib import admin
 # models
 from products.models import (
     CategoryModel, BrandModel, SizeModel,
-    ColorModel, TagModel, ProductModel, WishlistModel)
+    ColorModel, TagModel, ProductModel, WishlistModel,
+    ProductImage)
 
 # Register your models here.
 admin.site.register(ProductModel)
@@ -13,3 +14,4 @@ admin.site.register(SizeModel)
 admin.site.register(ColorModel)
 admin.site.register(TagModel)
 admin.site.register(WishlistModel)
+admin.site.register(ProductImage)

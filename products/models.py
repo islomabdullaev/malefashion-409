@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # validators
 from products.validators import rating_value_validate
@@ -79,9 +80,29 @@ class ProductModel(models.Model):
     def __str__(self) -> str:
         return self.name
     
+    def is_new(self):
+        current_time = timezone.now()
+        diff = (current_time - self.created_at).days
+        if diff <= 3:
+            return True
+        else:
+            return False
+    
     class Meta:
         verbose_name = "Product"
         verbose_name_plural = "Products"
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="products/nested_images")
+
+    def __str__(self) -> str:
+        return self.product.name
+    
+    class Meta:
+        verbose_name = "Product Image"
+        verbose_name_plural = "Product Images"
 
 
 class WishlistModel(models.Model):

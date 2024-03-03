@@ -169,6 +169,12 @@
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="{{ product.image.url }}">
+                                    {% if product.is_new %}
+                                        <span class="label">New</span>
+                                    {% endif %}
+                                    {% if product.discount %}
+                                        <span style="margin-top: 30px;" class="label bg-warning">-{{ product.discount }}%</span>
+                                    {% endif %}
                                     <ul class="product__hover">
                                         <li>
                                             <a href="{% url 'products:add_to_wishlist' product_pk=product.pk %}">
