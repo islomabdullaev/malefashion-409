@@ -88,6 +88,10 @@ class ProductModel(models.Model):
         else:
             return False
     
+    def get_real_price(self):
+        total = self.price - ((self.price / 100) * self.discount)
+        return total
+    
     class Meta:
         verbose_name = "Product"
         verbose_name_plural = "Products"

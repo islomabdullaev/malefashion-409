@@ -33,3 +33,15 @@ def add_to_wishlist(request, product_pk):
         WishlistModel.objects.get(user=request.user, product=product).delete()
     
     return redirect(current_path_url)
+
+
+@login_required
+def add_to_cart(request, pk):
+    cart = request.session.get("cart", [])
+    if pk in cart:
+        cart.remove(pk)
+    else:
+        cart.append(pk)
+    request.session['cart'] = cart
+
+    return redirect('pages:shop')

@@ -99,3 +99,7 @@ def contactPageView(request):
         ContactModel.objects.create(name=name, email=email, text=text)
         return redirect('pages:contact')
     return render(request, template_name="contact.html")
+
+def cartListView(request):
+    
+    return render(request, template_name="shopping-cart.html")
