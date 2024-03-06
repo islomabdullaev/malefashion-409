@@ -92,6 +92,11 @@ class ProductModel(models.Model):
         total = self.price - ((self.price / 100) * self.discount)
         return total
     
+    @staticmethod
+    def get_from_cart(cart):
+        return ProductModel.objects.filter(pk__in=cart)
+
+    
     class Meta:
         verbose_name = "Product"
         verbose_name_plural = "Products"

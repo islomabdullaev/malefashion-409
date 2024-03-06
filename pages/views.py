@@ -101,5 +101,9 @@ def contactPageView(request):
     return render(request, template_name="contact.html")
 
 def cartListView(request):
-    
-    return render(request, template_name="shopping-cart.html")
+    cart = request.session.get("cart", [])
+    products = ProductModel.objects.filter(pk__in=cart)
+    context = {
+        "products": products
+    }
+    return render(request, template_name="shopping-cart.html", context=context)

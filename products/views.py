@@ -37,6 +37,7 @@ def add_to_wishlist(request, product_pk):
 
 @login_required
 def add_to_cart(request, pk):
+    current_path_url = request.META.get("HTTP_REFERER")
     cart = request.session.get("cart", [])
     if pk in cart:
         cart.remove(pk)
@@ -44,4 +45,4 @@ def add_to_cart(request, pk):
         cart.append(pk)
     request.session['cart'] = cart
 
-    return redirect('pages:shop')
+    return redirect(current_path_url)
