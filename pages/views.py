@@ -23,15 +23,21 @@ def homePageView(request):
 def shopPageView(request):
     products = ProductModel.objects.all().order_by("price")
     q = request.GET.get('q')
-    from_price = request.GET.get("from_price")
-    to_price = request.GET.get("to_price")
     category = request.GET.get('category')
     sort = request.GET.get('sort')
     brand = request.GET.get('brand')
     size = request.GET.get('size')
     color = request.GET.get('color')
     tag = request.GET.get('tag')
-
+    price_range = request.GET.get('my_range')
+    paginator = Paginator(products, 3)
+    from_price = 0
+    to_price = 0
+    if price_range:
+        price_range = price_range.split(";")
+        from_price, to_price = price_range[0], price_range[1]
+        products = products.filter(price__gte=from_price, price__lte=to_price)
+        paginator = Paginator(products, len(products))
     if q:
         products = products.filter(name__icontains=q)
     elif category:
@@ -46,10 +52,7 @@ def shopPageView(request):
         products = products.filter(tags__title=tag)
     elif sort:
         products = products.order_by(sort)
-    elif from_price and to_price:
-        products = products.filter(price__gte=from_price, price__lte=to_price)
     
-    paginator = Paginator(products, 3)
     page_number = int(request.GET.get('page', 1))
 
     try:

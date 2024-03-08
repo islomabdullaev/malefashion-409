@@ -78,11 +78,23 @@
                                         <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
                                     </div>
                                     <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
-                                        <form method="GET">
-                                            <input name="from_price" value="{{ min_price }}" type="text">
-                                            <input name="to_price" value="{{ max_price }}" type="text">
-                                            <button type="submit">Filter</button>
-                                        </form>
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__price">
+                                                   <form action="" method="get">
+                                                     
+                                                    <input type="text" class="js-range-slider" name="my_range" value=""
+                                                    data-type="double"
+                                                    data-min="{{ min_price }}"
+                                                    data-max="{{ max_price }}"
+                                                    data-from="{{ from_price }}"
+                                                    data-to="{{ to_price }}"
+                                                    data-grid="true"
+                                                    
+                                                />
+                                                   <input style="background-color: #ed5565; border: none; border-radius: 9px; color: white; margin-top: 15px;" type="submit" id="input_submit">
+                                                   </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card">
@@ -239,18 +251,31 @@
     </section>
     <!-- Shop Section End -->
     {% block extra_js %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $("#myRangeSlider").ionRangeSlider({
-                min: {{ min_price }},
-                max: {{ max_price }},
-                from: {{ min_price }},
-                to: {{ max_price }},
-                step: 10
-            });
-        });
+        $(".js-range-slider").ionRangeSlider({
+        onStart: function (data) {
+            // Called right after range slider instance initialised
+        },
+    
+        onChange: function (data) {
+            // Called every time handle position is changed
+    
+            console.log(data.from);
+        },
+    
+        onFinish: function (data) {
+            // Called then action is done and mouse is released
+    
+            console.log(data.to);
+        },
+    
+        onUpdate: function (data) {
+            // Called then slider is changed using Update public method
+    
+            console.log(data.from_percent);
+        }
+    });
     </script>
     
     {% endblock %}

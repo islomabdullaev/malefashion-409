@@ -15,5 +15,10 @@ def get_cart_info(request):
     cart = request.session.get("cart", [])
     if not cart:
         return 0, 0.0
-    quantity, total_price = len(cart), ProductModel.get_from_cart(cart).aggregate(Sum("price"))['price__sum']
+    quantity = len(cart)
+    total_price = 0
+    products = ProductModel.get_from_cart(cart)
+    for product in products:
+        total_price += product.get_real_price()
+
     return quantity, total_price
