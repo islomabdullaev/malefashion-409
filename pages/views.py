@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # models
 from pages.models import BannerModel, ContactModel
-from products.models import BrandModel, CategoryModel, ColorModel, ProductModel, SizeModel, TagModel
+from products.models import BrandModel, CategoryModel, ColorModel, CouponModel, ProductModel, SizeModel, TagModel
 from django.db.models import Max, Min
 # Create your views here.
 
@@ -104,9 +104,15 @@ def contactPageView(request):
     return render(request, template_name="contact.html")
 
 def cartListView(request):
+    code = request.GET.get("coupon")
+    try:
+        coupon = CouponModel.objects.get(code=code)
+    except CouponModel.DoesNotExist:
+        coupon = None
     cart = request.session.get("cart", [])
     products = ProductModel.objects.filter(pk__in=cart)
     context = {
-        "products": products
+        "products": products,
+        "coupon": coupon
     }
     return render(request, template_name="shopping-cart.html", context=context)

@@ -11,7 +11,7 @@ def in_wishlist(user, product):
     return WishlistModel.objects.filter(user=user, product=product).exists()
 
 @register.simple_tag
-def get_cart_info(request):
+def get_cart_info(request, coupon=None):
     cart = request.session.get("cart", [])
     if not cart:
         return 0, 0.0
@@ -20,5 +20,6 @@ def get_cart_info(request):
     products = ProductModel.get_from_cart(cart)
     for product in products:
         total_price += product.get_real_price()
-
+    if coupon:
+        total_price = total_price - ((total_price / 100) * coupon.discount)
     return quantity, total_price

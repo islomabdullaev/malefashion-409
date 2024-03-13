@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # models
 from products.models import (
-    CategoryModel, BrandModel, SizeModel,
+    CategoryModel, BrandModel, CouponModel, SizeModel,
     ColorModel, TagModel, ProductModel, WishlistModel,
     ProductImage)
 
@@ -15,3 +15,4 @@ admin.site.register(ColorModel)
 admin.site.register(TagModel)
 admin.site.register(WishlistModel)
 admin.site.register(ProductImage)
+admin.site.register(CouponModel)

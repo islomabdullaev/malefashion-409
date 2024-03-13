@@ -80,15 +80,20 @@
                     <div class="col-lg-4">
                         <div class="cart__discount">
                             <h6>Discount codes</h6>
-                            <form action="#">
-                                <input type="text" placeholder="Coupon code">
+                            {% if coupon %}
+                                <p>Coupon with code: {{ coupon.code }} Activated giving bonus: {{ coupon.discount }}% !</p>
+                            {% else %}
+                                <p>Coupon not found or expired !</p>
+                            {% endif %}
+                            <form method="GET">
+                                <input name="coupon" type="text" placeholder="Coupon code">
                                 <button type="submit">Apply</button>
                             </form>
                         </div>
                         <div class="cart__total">
                             <h6>Cart total</h6>
                             <ul>
-                                {% get_cart_info request as cart_info %}
+                                {% get_cart_info request coupon as cart_info %}
                                 {% for product in products %}
                                     <li>{{ product.name|slice:"22" }} <span>${{ product.get_real_price }}</span></li>
                                 {% endfor %}
