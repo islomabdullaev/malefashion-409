@@ -207,7 +207,13 @@
                                 </div>
                                 <div class="product__item__text">
                                     <h6>{{ product.name }}</h6>
-                                    <a href="{% url 'products:add_to_cart' pk=product.pk %}" class="add-cart">+ Add To Cart</a>
+                                    <a href="{% url 'products:add_to_cart' pk=product.pk %}" class="add-cart">
+                                        {% if request|in_cart:product.pk %}
+                                            - Remove From Cart
+                                        {% else %}
+                                            + Add To Cart
+                                        {% endif %}
+                                    </a>
                                     <div class="rating">
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>

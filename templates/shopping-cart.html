@@ -27,6 +27,17 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="shopping__cart__table">
+                            <div style="height: 65px;">
+                                {% if messages %}
+                                    <ul class="messages">
+                                        {% for message in messages %}
+                                            <div class="alert alert-success" role="alert">
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
                             <table>
                                 <thead>
                                     <tr>
@@ -80,11 +91,21 @@
                     <div class="col-lg-4">
                         <div class="cart__discount">
                             <h6>Discount codes</h6>
-                            {% if coupon %}
-                                <p>Coupon with code: {{ coupon.code }} Activated giving bonus: {{ coupon.discount }}% !</p>
-                            {% else %}
-                                <p>Coupon not found or expired !</p>
-                            {% endif %}
+                            <div style="height: 60px;">
+                                {% if request.GET.coupon %}
+                                    {% if coupon %}
+                                        <div class="alert alert-success" role="alert">
+                                            Coupon activated with bonus: {{ coupon.discount }}%
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-danger" role="alert">
+                                            Coupon not found or expired !
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+
+                                {% endif %}
+                            </div>
                             <form method="GET">
                                 <input name="coupon" type="text" placeholder="Coupon code">
                                 <button type="submit">Apply</button>
@@ -99,11 +120,20 @@
                                 {% endfor %}
                                 <li>Total <span>$ {{ cart_info.1 }}</span></li>
                             </ul>
-                            <a href="#" class="primary-btn">Proceed to checkout</a>
+                            <form action="{% url 'orders:checkout' %}?total_price={{ cart_info.1 }}&code={{ coupon.code }}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-dark" type="submit">Proceed to checkout</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <!-- Shopping Cart Section End -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    setInterval(function(){ $(".alert").fadeOut(); }, 3000);
+</script>
 {% endblock %}

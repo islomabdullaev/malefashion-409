@@ -106,7 +106,7 @@ def contactPageView(request):
 def cartListView(request):
     code = request.GET.get("coupon")
     try:
-        coupon = CouponModel.objects.get(code=code)
+        coupon = CouponModel.objects.filter(code=code, is_active=True).first()
     except CouponModel.DoesNotExist:
         coupon = None
     cart = request.session.get("cart", [])
