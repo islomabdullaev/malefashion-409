@@ -9,12 +9,18 @@ from products.models import CouponModel, ProductModel
 
 def checkout(request):
     if request.method == "POST":
-        cart = request.session.get("cart", [])
+        cart = request.session.get("data", [])
         total_price = request.GET.get("total_price")
         code = request.GET.get("code")
         if not cart:
             return HttpResponse("Cart is empty !")
-        products = ProductModel.get_from_cart(cart)
+        products = []
+        for cart_data in cart:
+            data = {
+                "product": ProductModel.objects.get(pk=cart_data['pk']),
+                "quantity": cart_data['quantity']
+            }
+            products.append(data)
         order = OrderModel.objects.create(user=request.user, total_price=0.0)
         if total_price:
             order.total_price = total_price
@@ -23,8 +29,8 @@ def checkout(request):
             coupon = CouponModel.objects.get(code=code)
             coupon.is_active = False
             coupon.save()
-        for product in products:
-            OrderItemModel.objects.create(order=order, product=product, quantity=1)
+        for data in products:
+            OrderItemModel.objects.create(order=order, product=data['product'], quantity=data['quantity'])
         messages.add_message(request, messages.SUCCESS, "Order Created Successfully !")
-        request.session['cart'] = []
+        request.session['data'] = []
     return redirect("pages:cart")

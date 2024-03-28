@@ -23,6 +23,8 @@
     
         <!-- Shopping Cart Section Begin -->
         <section class="shopping-cart spad">
+            <form action="{% url 'products:update_cart' %}" method="POST">
+                {% csrf_token %}
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
@@ -48,31 +50,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for product in products %}
+                                    {% for data in products %}
                                         <tr>
                                             <td class="product__cart__item">
                                                 <div class="product__cart__item__pic">
-                                                    <img width="90" src="{{ product.image.url }}" alt="">
+                                                    <img width="90" src="{{ data.product.image.url }}" alt="">
                                                 </div>
                                                 <div class="product__cart__item__text">
-                                                    <h6>{{ product.name }}</h6>
+                                                    <h6>{{ data.product.name }}</h6>
                                                     <h5>
-                                                        ${{ product.get_real_price }}
+                                                        ${{ data.product.get_real_price }}
                                                         {% if product.discount %}
-                                                            <span class="ml-2 text-danger"><s>{{ product.price }}</s></span>
+                                                            <span class="ml-2 text-danger"><s>{{ data.product.price }}</s></span>
                                                         {% endif %}
                                                 </h5>
                                                 </div>
                                             </td>
                                             <td class="quantity__item">
+                                                <input name="pk" type="hidden" value="{{ data.product.pk }}">
                                                 <div class="quantity">
                                                     <div class="pro-qty-2">
-                                                        <input type="text" value="1">
+                                                        <input name="quantity" type="text" value="{{ data.quantity }}">
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="cart__price">$ 30.00</td>
-                                            <td class="cart__close"><a href="{% url 'products:add_to_cart' pk=product.pk %}"><i class="fa fa-close"></i></a></td>
+                                            <td class="cart__price">$ {{ data.product.get_real_price|each_total_price:data.quantity }}</td>
+                                            <td class="cart__close"><a href="{% url 'products:remove_from_cart' pk=data.product.pk %}"><i class="fa fa-close"></i></a></td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -86,7 +89,13 @@
                                     </div>
                                 </div>
                             {% endif %}
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="continue__btn update__btn">
+                                    <button type="submit"><a><i class="fa fa-spinner"></i> Update cart</a></button>
+                                </div>
+                            </div>    
                         </div>
+                    </form>
                     </div>
                     <div class="col-lg-4">
                         <div class="cart__discount">
@@ -115,8 +124,8 @@
                             <h6>Cart total</h6>
                             <ul>
                                 {% get_cart_info request coupon as cart_info %}
-                                {% for product in products %}
-                                    <li>{{ product.name|slice:"22" }} <span>${{ product.get_real_price }}</span></li>
+                                {% for data in products %}
+                                    <li>{{ data.product.name|slice:"22" }} <span>${{ data.product.get_real_price }}</span></li>
                                 {% endfor %}
                                 <li>Total <span>$ {{ cart_info.1 }}</span></li>
                             </ul>
@@ -128,6 +137,7 @@
                     </div>
                 </div>
             </div>
+        </form>
         </section>
         <!-- Shopping Cart Section End -->
 {% endblock %}

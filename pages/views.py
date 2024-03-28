@@ -109,10 +109,17 @@ def cartListView(request):
         coupon = CouponModel.objects.filter(code=code, is_active=True).first()
     except CouponModel.DoesNotExist:
         coupon = None
-    cart = request.session.get("cart", [])
-    products = ProductModel.objects.filter(pk__in=cart)
+    cart_data = request.session.get("data", [])
+    products = []
+    for data in cart_data:
+        products_data = {
+            "product": ProductModel.objects.get(pk=int(data['pk'])),
+            "quantity": int(data['quantity'])
+        }
+        products.append(products_data)
     context = {
         "products": products,
         "coupon": coupon
     }
+
     return render(request, template_name="shopping-cart.html", context=context)

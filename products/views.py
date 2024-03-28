@@ -36,13 +36,51 @@ def add_to_wishlist(request, product_pk):
 
 
 @login_required
-def add_to_cart(request, pk):
+def add_to_cart(request, pk, quantity):
     current_path_url = request.META.get("HTTP_REFERER")
-    cart = request.session.get("cart", [])
-    if pk in cart:
-        cart.remove(pk)
+    cart_data = request.session.get("data", [])
+    data = {
+        "pk": pk,
+        "quantity": quantity
+    }
+    if data in cart_data:
+        cart_data.remove(data)
     else:
-        cart.append(pk)
-    request.session['cart'] = cart
+        cart_data.append(data)
+    request.session['data'] = cart_data
 
+    return redirect(current_path_url)
+
+
+@login_required
+def remove_from_cart(request, pk):
+    current_path_url = request.META.get("HTTP_REFERER")
+    cart_data = request.session.get("data", [])
+    print(cart_data)
+    for data in cart_data:
+        if int(data['pk']) == pk:
+            to_remove = {"pk": str(pk), "quantity": data['quantity']}
+            print(to_remove)
+            cart_data.remove(to_remove)
+    request.session['data'] = cart_data
+
+    return redirect(current_path_url)
+
+
+@login_required
+def update_cart(request):
+    current_path_url = request.META.get("HTTP_REFERER")
+    cart_data = request.session.get("data", [])
+    key1_values = request.POST.getlist('pk')
+    key2_values = request.POST.getlist('quantity')
+    new_data = []
+    # bu yerda biz pk bilan quantity ni bir biriga boglayapmiz olyatganda
+    # print(request.POST) qilib koringlar korish uchun qanday turda kelyatganini malumotni
+    for pk, quantity in zip(key1_values, key2_values):
+        data = {
+            "pk": pk,
+            "quantity": quantity
+        }
+        new_data.append(data)
+    request.session['data'] = new_data
     return redirect(current_path_url)

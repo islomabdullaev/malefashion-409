@@ -12,14 +12,20 @@ def in_wishlist(user, product):
 
 @register.simple_tag
 def get_cart_info(request, coupon=None):
-    cart = request.session.get("cart", [])
-    if not cart:
+    cart_data = request.session.get("data", [])
+    if not cart_data:
         return 0, 0.0
-    quantity = len(cart)
+    quantity = len(cart_data)
     total_price = 0
-    products = ProductModel.get_from_cart(cart)
-    for product in products:
-        total_price += product.get_real_price()
+    products = []
+    for data in cart_data:
+        product_data = {
+            "product": ProductModel.objects.get(pk=data['pk']),
+            "quantity": data['quantity']
+        }
+        products.append(product_data)
+    for data in products:
+        total_price += (data['product'].get_real_price() * float(data['quantity']))
     if coupon:
         total_price = total_price - ((total_price / 100) * coupon.discount)
     return quantity, total_price
@@ -31,3 +37,9 @@ def in_cart(request, pk):
         return True
     else:
         return False
+
+
+@register.filter(name='each_total_price')
+def each_total_price(price, quantity):
+    total_price = price * float(quantity)
+    return "{:.2f}".format(total_price)
